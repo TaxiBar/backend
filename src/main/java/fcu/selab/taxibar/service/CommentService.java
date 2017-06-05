@@ -57,58 +57,54 @@ public class CommentService {
       java.net.URI location = new java.net.URI("../GiveComment.jsp");
     }
     // return response;
-    java.net.URI location = new java.net.URI("../Comment.jsp");
+    java.net.URI location = new java.net.URI("../GiveComment.jsp");
     return Response.temporaryRedirect(location).build();
   }
 
   public void caculateRank(int driverId) {
     List<Comment> comments = getCommentByDriverId(driverId);
-    int scoreOne = 0;
-    int scoreZreo = 0;
-    int scoreMinusOne = 0;
+    int score = 0;
     String scoreType = "";
 
     for (Comment comment : comments) {
-      int score = comment.getScore();
+      score = score + comment.getScore();
       if (score == 1) {
-        scoreOne++;
+        scoreType = "scoreOne";
       }
       if (score == 0) {
-        scoreZreo++;
+        scoreType = "scoreZreo";
       }
       if (score == -1) {
-        scoreMinusOne++;
+        scoreType = "scoreMinusOne";
       }
     }
-
-    scoreType = getMax(scoreOne, scoreZreo, scoreMinusOne);
 
     rankService.addRank(driverId, scoreType);
   }
-
-  public String getMax(int scoreOne, int scoreZreo, int scoreMinusOne) {
-    String scoreType = "";
-
-    if (scoreOne >= scoreZreo) {
-      if (scoreZreo >= scoreMinusOne) {
-        scoreType = "scoreOne";
-      } else if (scoreOne >= scoreMinusOne) {
-        scoreType = "scoreOne";
-      } else {
-        scoreType = "scoreMinusOne";
-      }
-    } else {
-      if (scoreOne >= scoreMinusOne) {
-        scoreType = "scoreZreo";
-      } else if (scoreZreo >= scoreMinusOne) {
-        scoreType = "scoreZreo";
-      } else {
-        scoreType = "scoreMinusOne";
-      }
-    }
-
-    return scoreType;
-  }
+  //
+  // public String getMax(int scoreOne, int scoreZreo, int scoreMinusOne) {
+  // String scoreType = "";
+  //
+  // if (scoreOne >= scoreZreo) {
+  // if (scoreZreo >= scoreMinusOne) {
+  // scoreType = "scoreOne";
+  // } else if (scoreOne >= scoreMinusOne) {
+  // scoreType = "scoreOne";
+  // } else {
+  // scoreType = "scoreMinusOne";
+  // }
+  // } else {
+  // if (scoreOne >= scoreMinusOne) {
+  // scoreType = "scoreZreo";
+  // } else if (scoreZreo >= scoreMinusOne) {
+  // scoreType = "scoreZreo";
+  // } else {
+  // scoreType = "scoreMinusOne";
+  // }
+  // }
+  //
+  // return scoreType;
+  // }
 
   @GET
   @Path("driverId/{driverId}")

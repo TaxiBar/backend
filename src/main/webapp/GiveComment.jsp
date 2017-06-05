@@ -46,27 +46,27 @@
 	
 	.card-subtitle{ margin-top: 1em; }
 	
-	p { font-size: 16px; }
+	p { font-size: 14px; }
 	
 	#time { margin-bottom: 0px; }
 	
-	span { font-size: 40px; }
+	span { font-size: 40px; padding-left: 10px;}
 
 	#content { resize: none; }
 
 	label { font-size: 16px; margin-top: 10px; }
 	
-	.labelGood:before{ background-image: url('img/good.png'); width: 30px; height: 40px; background-size: 30px 40px; display: inline-block; content:""; }
+	.labelGood:before{ background-image: url('img/good.png'); width: 20px; height: 30px; background-size: 20px 30px; display: inline-block; content:""; }
 	
-	.labelNeutral:before{ background-image: url('img/neutral.png'); width: 30px; height: 40px; background-size: 30px 40px; display: inline-block; content:""; }
+	.labelNeutral:before{ background-image: url('img/neutral.png'); width: 20px; height: 30px; background-size: 20px 30px; display: inline-block; content:""; background-position: bottom; }
 	
-	.labelBad:before{ background-image: url('img/bad.png'); width: 30px; height: 40px; background-size: 30px 40px; display: inline-block; content:""; }
+	.labelBad:before{ background-image: url('img/bad.png'); width: 20px; height: 30px; background-size: 20px 30px; display: inline-block; content:""; }
 	
-	.good:before{ content: url('img/good.png');  }
+	.good:before{ background-image: url('img/good.png'); width: 40px; height: 60px; background-size: 40px 60px; display: inline-block; content:"";  }
 	
-	.neutral:before{ content: url('img/neutral.png');  }
+	.neutral:before{ background-image: url('img/neutral.png'); width: 40px; height: 60px; background-size: 40px 60px; display: inline-block; content:"";  }
 	
-	.bad:before{ content: url('img/bad.png');  }
+	.bad:before{ background-image: url('img/bad.png'); width: 40px; height: 60px; background-size: 40px 60px; display: inline-block; content:"";  }
 
 	#rate { font-size: 40px; }
 
@@ -74,7 +74,7 @@
 	
 	#good, #soso, #bad { visibility: hidden; }
 	
-	#plateNumber{ border: 1px solid gray; border-radius: 20px; text-align: center; }
+	#plateNumber{ font-size: 40px; text-align: center; padding-right: 20px;}
 </style>
 </head>
 <body>
@@ -97,24 +97,24 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-sm-12">
-				<div class="form-group" style="border-bottom: 1px solid #333; padding-bottom: 10px;">
+				<div class="form-group" style="border-bottom: 1px solid #D3D3D3; position:relative;">
 					<%
     					if(rank == 1) {
     						%>
-    						<h1 id="plateNumber"><%=plateNumber %> <span class="labelGood"></span></h1>
+    						<h1 id="plateNumber"><%=plateNumber %><span class="labelGood" style="position:absolute; bottom: 18px;"></span></h1>
     						<%
     					}else if(rank == 0) {
     						%>
-    						<h1 id="plateNumber"><%=plateNumber %> <span class="labelNeutral"></span></h1>
+    						<h1 id="plateNumber"><%=plateNumber %><span class="labelNeutral" style="position:absolute; bottom: 18px;"></span></h1>
     						<%
     					}else {
     						%>
-    						<h1 id="plateNumber"><%=plateNumber %> <span class="labelBad"></span></h1>
+    						<h1 id="plateNumber"><%=plateNumber %><span class="labelBad" style="position:absolute; bottom: 18px;"></span></h1>
     						<%
     					}
     				%>
 				</div>
-				<div class="form-group">
+				<div class="form-group" style="border-bottom: 1px solid #D3D3D3; padding-bottom: 20px;">
 					<form id="comment" method="post" action="webapi/comment/add" enctype="application/x-www-form-urlencoded">
 						<strong><label>評分：</label></strong>
 						<br>
@@ -140,6 +140,7 @@
 			</div>
 		</div>
 		<div class="row">
+		<h3 class="col-sm-12" style="margin-top: 10px;"><strong>所有評論</strong></h3>
 <%
     	for(Comment comment : lsComments) {
     		int score = comment.getScore();
@@ -158,20 +159,26 @@
     				<%
     					if(score == 1) {
     						%>
-    						<h3 class="card-title"><strong><%=comment.getComment() %> </strong><span class="labelGood"></span></h3>
+    						<div style="position:relative;">
+    							<h4 class="card-title"><strong><%=comment.getComment() %></strong><span class="labelGood" style="position:absolute; bottom: 3px;"></span></h4>
+    						</div>
     						<%
     					}else if(score == 0) {
     						%>
-    						<h3 class="card-title"><strong><%=comment.getComment() %> </strong><span class="labelNeutral"></span></h3>
+    						<div style="position:relative;">
+    							<h4 class="card-title"><strong><%=comment.getComment() %></strong><span class="labelNeutral" style="position:absolute; bottom: 3px;"></span></h4>
+    						</div>
     						<%
     					}else {
     						%>
-    						<h3 class="card-title"><strong><%=comment.getComment() %> </strong><span class="labelBad"></span></h3>
+    						<div style="position:relative;">
+    							<h4 class="card-title"><strong><%=comment.getComment() %></strong><span class="labelBad" style="position:absolute; bottom: 3px;"></span></h4>
+    						</div>
     						<%
     					}
     				%>
     				<!-- <input value=<%=score %> id="rate" name="rate" class="rating rating-loading" data-show-clear="false" data-show-caption="false" data-readonly="true"> -->
-    				<h4 class="card-subtitle mb-2 text-muted">使用者： <%=newUserName %></h4>
+    				<h5 class="card-subtitle mb-2 text-muted">使用者： <%=newUserName %></h5>
     				<p id="time" class="text-right"> <%=comment.getCommentTime().substring(0, 19) %></p>
   				</div>
 			</div>
