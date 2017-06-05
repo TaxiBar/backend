@@ -8,11 +8,9 @@ public class Comment {
 
   private int driverId;
 
-  private String title;
-
   private String comment;
 
-  private float score;
+  private int score;
 
   private String commentTime;
 
@@ -40,14 +38,6 @@ public class Comment {
     this.driverId = driverId;
   }
 
-  public String getTitle() {
-    return title;
-  }
-
-  public void setTitle(String title) {
-    this.title = title;
-  }
-
   public String getComment() {
     return comment;
   }
@@ -56,11 +46,11 @@ public class Comment {
     this.comment = comment;
   }
 
-  public float getScore() {
+  public int getScore() {
     return score;
   }
 
-  public void setScore(float score) {
+  public void setScore(int score) {
     this.score = score;
   }
 

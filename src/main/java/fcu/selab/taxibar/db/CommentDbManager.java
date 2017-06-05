@@ -32,7 +32,7 @@ public class CommentDbManager {
   public boolean addComment(Comment comment) {
     Connection conn = database.getConnection();
     PreparedStatement preStmt = null;
-    String sql = "INSERT INTO Comment(userID, driverID, title, comment, score, commentTime)  VALUES(?, ?, ?, ?, ?, ?)";
+    String sql = "INSERT INTO Comment(userID, driverID, comment, score, commentTime)  VALUES(?, ?, ?, ?, ?)";
     boolean check = false;
 
     try {
@@ -43,12 +43,10 @@ public class CommentDbManager {
       preStmt = conn.prepareStatement(sql);
       preStmt.setInt(1, comment.getUserId());
       preStmt.setInt(2, comment.getDriverId());
-      preStmt.setString(3, comment.getTitle());
-      preStmt.setString(4, comment.getComment());
-      preStmt.setFloat(5, comment.getScore());
-      preStmt.setString(6, sdFormat.format(current));
+      preStmt.setString(3, comment.getComment());
+      preStmt.setFloat(4, comment.getScore());
+      preStmt.setString(5, sdFormat.format(current));
       preStmt.executeUpdate();
-      preStmt.close();
 
       check = true;
     } catch (SQLException e) {
@@ -77,16 +75,14 @@ public class CommentDbManager {
       while (rs.next()) {
         int id = rs.getInt("id");
         int userId = rs.getInt("userID");
-        String title = rs.getString("title");
         String content = rs.getString("comment");
-        float score = rs.getFloat("score");
+        int score = rs.getInt("score");
         String commentTime = rs.getString("commentTime");
 
         Comment comment = new Comment();
         comment.setId(id);
         comment.setUserId(userId);
         comment.setDriverId(driverId);
-        comment.setTitle(title);
         comment.setComment(content);
         comment.setScore(score);
         comment.setCommentTime(commentTime);
@@ -120,16 +116,14 @@ public class CommentDbManager {
         int id = rs.getInt("id");
         int userId = rs.getInt("userID");
         int driverId = rs.getInt("driverID");
-        String title = rs.getString("title");
         String content = rs.getString("comment");
-        float score = rs.getFloat("score");
+        int score = rs.getInt("score");
         String commentTime = rs.getString("commentTime");
 
         Comment comment = new Comment();
         comment.setId(id);
         comment.setUserId(userId);
         comment.setDriverId(driverId);
-        comment.setTitle(title);
         comment.setComment(content);
         comment.setScore(score);
         comment.setCommentTime(commentTime);

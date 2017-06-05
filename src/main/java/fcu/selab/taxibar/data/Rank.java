@@ -4,7 +4,7 @@ public class Rank {
 
   private int driverId;
 
-  private float score;
+  private int score;
 
   public int getDriverId() {
     return driverId;
@@ -14,11 +14,11 @@ public class Rank {
     this.driverId = driverId;
   }
 
-  public float getScore() {
+  public int getScore() {
     return score;
   }
 
-  public void setScore(float score) {
+  public void setScore(int score) {
     this.score = score;
   }
 

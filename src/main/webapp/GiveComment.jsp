@@ -1,115 +1,186 @@
-<%@ page language="java" contentType="text/html; charset=BIG5"
-    pageEncoding="utf-8"%>
-<%@ page import="fcu.selab.taxibar.service.CommentService, fcu.selab.taxibar.service.UserService" %>
-<%@ page import="fcu.selab.taxibar.data.Comment" %>
-<%@ page import="java.util.List" %>
+<%@ page language="java" contentType="text/html; charset=utf-8"
+	pageEncoding="utf-8"%>
+<%@ page
+	import="fcu.selab.taxibar.service.CommentService, fcu.selab.taxibar.service.UserService"%>
+<%@ page import="fcu.selab.taxibar.data.Comment"%>
+<%@ page import="fcu.selab.taxibar.db.CommentDbManager, fcu.selab.taxibar.db.UserDbManager, 
+				 fcu.selab.taxibar.db.DriverDbManager, fcu.selab.taxibar.db.RankDbManager" %>
+<%@ page import="java.util.List, java.util.Collections" %>
+<%@ page import="java.util.List"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
-	
-	<link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-    <link href="./css/star-rating.css" media="all" rel="stylesheet" type="text/css">
-    <script src="./js/star-rating.js" type="text/javascript"></script>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
+	integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ"
+	crossorigin="anonymous">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"
+	integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
+	crossorigin="anonymous"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
+	integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
+	crossorigin="anonymous"></script>
+
+<link
+	href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+	rel="stylesheet">
+<link rel="stylesheet"
+	href="http://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+<link href="./css/star-rating.css" media="all" rel="stylesheet"
+	type="text/css">
+<script src="./js/star-rating.js" type="text/javascript"></script>
 <title>TaxiBar</title>
 <style>
-	body{
-		font-family:"MyriadPro","sourcehansans-tc","Microsoft JhengHei"
-	}
-	.h1, .h2, .h3, h1, h2, h3 {
-		margin-top: 0;
-	}
-	.rating-sm {
-		font-size: 1em;
-	}
-	#content {
-		resize: none;
-	}
-	label{
-		font-size: 16px;
-		margin-top: 10px;
-	}
+	body { font-family: "MyriadPro", "sourcehansans-tc", "Microsoft JhengHei" }
+
+	.container { margin-top: 30px; margin-bottom: 30px; }
+
+	.h1, .h2, .h3, h1, h2, h3 { margin-top: 0; }
+	
+	.card { margin-top: 1em; }
+	
+	.card-subtitle{ margin-top: 1em; }
+	
+	p { font-size: 16px; }
+	
+	#time { margin-bottom: 0px; }
+	
+	span { font-size: 40px; }
+
+	#content { resize: none; }
+
+	label { font-size: 16px; margin-top: 10px; }
+	
+	.labelGood:before{ background-image: url('img/good.png'); width: 30px; height: 40px; background-size: 30px 40px; display: inline-block; content:""; }
+	
+	.labelNeutral:before{ background-image: url('img/neutral.png'); width: 30px; height: 40px; background-size: 30px 40px; display: inline-block; content:""; }
+	
+	.labelBad:before{ background-image: url('img/bad.png'); width: 30px; height: 40px; background-size: 30px 40px; display: inline-block; content:""; }
+	
+	.good:before{ content: url('img/good.png');  }
+	
+	.neutral:before{ content: url('img/neutral.png');  }
+	
+	.bad:before{ content: url('img/bad.png');  }
+
+	#rate { font-size: 40px; }
+
+	#rate:hover { border: 1px solid #333; }
+	
+	#good, #soso, #bad { visibility: hidden; }
+	
+	#plateNumber{ border: 1px solid gray; border-radius: 20px; text-align: center; }
 </style>
 </head>
 <body>
+	<%
+		String plateNumber = request.getParameter("plateNumber");
+		String empty = "";
+		if (null == plateNumber || empty.equals(plateNumber)) {
+			plateNumber = "";
+		}
+		CommentDbManager commentDbManager = CommentDbManager.getInstance();
+		UserDbManager userDbManager = UserDbManager.getInstance();
+		DriverDbManager driverDbManager = DriverDbManager.getInstance();
+		RankDbManager rankDbManager = RankDbManager.getInstance();
+		int driverId = driverDbManager.getDriverByPlateNumber(plateNumber).getId();
+		int rank = rankDbManager.getRankByPlateNumber(plateNumber).getScore();
+		
+		List<Comment> lsComments = commentDbManager.getCommentByDriverId(driverId);
+		Collections.reverse(lsComments);
+	%>
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="form-group" style="border-bottom: 1px solid #333; padding-bottom: 10px;">
+					<%
+    					if(rank == 1) {
+    						%>
+    						<h1 id="plateNumber"><%=plateNumber %> <span class="labelGood"></span></h1>
+    						<%
+    					}else if(rank == 0) {
+    						%>
+    						<h1 id="plateNumber"><%=plateNumber %> <span class="labelNeutral"></span></h1>
+    						<%
+    					}else {
+    						%>
+    						<h1 id="plateNumber"><%=plateNumber %> <span class="labelBad"></span></h1>
+    						<%
+    					}
+    				%>
+				</div>
+				<div class="form-group">
+					<form id="comment" method="post" action="webapi/comment/add" enctype="application/x-www-form-urlencoded">
+						<strong><label>評分：</label></strong>
+						<br>
+    					<label id="rate" for="good" class="good"></label>
+    					<input type="radio" id="good" name="rate" value=<%=1%>>
+    					
+						<label id="rate" for="soso" class="neutral"></label>
+						<input type="radio" id="soso" name="rate" value=<%=0%>>
+						
+						<label id="rate" for="bad" class="bad"></label>
+						<input type="radio" id="bad" name="rate" value=<%=-1%>>
+						
+						<input value="<%=plateNumber%>" type="text" id="plateNumber" name="plateNumber" hidden>
+						<br>
+						<strong><label for="content">內容：</label></strong>
+						<br>
+						<textarea class="col-sm-12" id="content" name="content" rows="5"></textarea>
+						<br>
+						<br>
+						<button type="submit" class="btn btn-default">送出</button>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="row">
 <%
-	String plateNumber = (String) session.getAttribute("plateNumber");
-	CommentService commentService = new CommentService();
-	UserService userService = new UserService();
-	List<Comment> lsComments = commentService.getCommentByDriverId(1);
-%>
-<nav class="navbar navbar-toggleable-md navbar-light bg-faded" style="background-color: #e3f2fd">
-  <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <strong><a class="navbar-brand" href="#page-top" style="font-size: 24px; padding-left: 20px">TaxiBar</a></strong>
-</nav>
-<div class="container">
-	<div class="row">
-		<div class="col-sm-12">
-			<div class="card">
-  				<h3 class="card-header">新增評論</h3>
+    	for(Comment comment : lsComments) {
+    		int score = comment.getScore();
+    		String userName = userDbManager.getUserById(comment.getUserId()).getUserName();
+    		String newUserName = userName;
+    		if(userName.length()>2) {
+    			newUserName = userName.substring(0, 3);
+    			for(int j=0; j<userName.length()-3; j++) {
+    				newUserName  = newUserName + "*";
+    			}
+    		}
+    	%>
+    	<div class="col-sm-6">
+    		<div class="card" id="comment">
   				<div class="card-block">
-    				<div class="form-group">
-						<form id="comment">
-							<strong><label for="plateNumber">車牌號碼：</label></strong>
-							<br>
-							<input value="<%=plateNumber %>" type="text" id="plateNumber" name="plateNumber">
-							<br>
-							<strong><label for="title">主旨：</label></strong>
-							<br>
-							<input type="text" id="title" name="title">
-							<br>
-							<strong><label for="content">內容：</label></strong>
-							<br>
-							<textarea id="content" name="content" rows="5" cols="50"></textarea>
-							<br>
-							<strong><label>評分：</label></strong>
-							<br>
-							<div class="rating-container rating-sm rating-animate">
-								<div class="rating-stars">
-									<input id="rate" name="rate" class="rating rating-loading" data-show-clear="false" data-show-caption="false">
-								</div>
-							</div>
-							<br>
-							<button type="submit" class="btn btn-default">送出</button>
-						</form>
-					</div>
+    				<%
+    					if(score == 1) {
+    						%>
+    						<h3 class="card-title"><strong><%=comment.getComment() %> </strong><span class="labelGood"></span></h3>
+    						<%
+    					}else if(score == 0) {
+    						%>
+    						<h3 class="card-title"><strong><%=comment.getComment() %> </strong><span class="labelNeutral"></span></h3>
+    						<%
+    					}else {
+    						%>
+    						<h3 class="card-title"><strong><%=comment.getComment() %> </strong><span class="labelBad"></span></h3>
+    						<%
+    					}
+    				%>
+    				<!-- <input value=<%=score %> id="rate" name="rate" class="rating rating-loading" data-show-clear="false" data-show-caption="false" data-readonly="true"> -->
+    				<h4 class="card-subtitle mb-2 text-muted">使用者： <%=newUserName %></h4>
+    				<p id="time" class="text-right"> <%=comment.getCommentTime().substring(0, 19) %></p>
   				</div>
 			</div>
 		</div>
+    	<%
+    	}
+    %>
     </div>
- </div>
+	</div>
 </body>
-<script>
-	$(document).ready(function() {
-		$("form").submit(function(evt) {
-			evt.preventDefault();
-			var formData = $(this).serialize();
-			console.log(formData);
-			$.ajax({
-				url : 'webapi/comment/add',
-				type : 'POST',
-				data : formData,
-				async : false,
-				cache : false,
-				contentType : 'application/x-www-form-urlencoded; charset=UTF-8',
-				processData : false,
-				success : function(response) {
-					alert("Successed!");
-					top.location.href = "../taxibar/GiveComment.jsp";
-				}, 
-				error : function(response) {
-					alert("failed!");
-				}
-			});
-			return false;
-		});
-	});
-</script>
+
 </html>

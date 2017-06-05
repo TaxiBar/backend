@@ -1,5 +1,6 @@
 package fcu.selab.taxibar.service;
 
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +13,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 
 import fcu.selab.taxibar.data.Comment;
 import fcu.selab.taxibar.db.CommentDbManager;
@@ -21,6 +21,8 @@ import fcu.selab.taxibar.db.CommentDbManager;
 public class CommentService {
 
   private CommentDbManager dbManager = CommentDbManager.getInstance();
+
+  private RankService rankService = new RankService();
 
   private DriverService driverService = new DriverService();
 
@@ -34,24 +36,78 @@ public class CommentService {
   @POST
   @Path("add")
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-  public Response addComment(@FormParam("plateNumber") String plateNumber, @FormParam("title") String title,
-      @FormParam("content") String content, @FormParam("rate") float rate) {
+  public Response addComment(@FormParam("plateNumber") String plateNumber, @FormParam("content") String content,
+      @FormParam("rate") int rate) throws URISyntaxException {
     int driverId = driverService.getDriverByPlateNumber(plateNumber).getId();
 
     Comment comment = new Comment();
     comment.setDriverId(driverId);
     comment.setUserId(1);
-    comment.setTitle(title);
     comment.setComment(content);
-    comment.setScore(rate / 5);
+    comment.setScore(rate);
 
     boolean check = dbManager.addComment(comment);
 
-    Response response = Response.ok().build();
+    caculateRank(driverId);
+
+    // Response response = Response.ok().build();
     if (!check) {
-      response = Response.serverError().status(Status.INTERNAL_SERVER_ERROR).build();
+      // response =
+      // Response.serverError().status(Status.INTERNAL_SERVER_ERROR).build();
+      java.net.URI location = new java.net.URI("../GiveComment.jsp");
     }
-    return response;
+    // return response;
+    java.net.URI location = new java.net.URI("../Comment.jsp");
+    return Response.temporaryRedirect(location).build();
+  }
+
+  public void caculateRank(int driverId) {
+    List<Comment> comments = getCommentByDriverId(driverId);
+    int scoreOne = 0;
+    int scoreZreo = 0;
+    int scoreMinusOne = 0;
+    String scoreType = "";
+
+    for (Comment comment : comments) {
+      int score = comment.getScore();
+      if (score == 1) {
+        scoreOne++;
+      }
+      if (score == 0) {
+        scoreZreo++;
+      }
+      if (score == -1) {
+        scoreMinusOne++;
+      }
+    }
+
+    scoreType = getMax(scoreOne, scoreZreo, scoreMinusOne);
+
+    rankService.addRank(driverId, scoreType);
+  }
+
+  public String getMax(int scoreOne, int scoreZreo, int scoreMinusOne) {
+    String scoreType = "";
+
+    if (scoreOne >= scoreZreo) {
+      if (scoreZreo >= scoreMinusOne) {
+        scoreType = "scoreOne";
+      } else if (scoreOne >= scoreMinusOne) {
+        scoreType = "scoreOne";
+      } else {
+        scoreType = "scoreMinusOne";
+      }
+    } else {
+      if (scoreOne >= scoreMinusOne) {
+        scoreType = "scoreZreo";
+      } else if (scoreZreo >= scoreMinusOne) {
+        scoreType = "scoreZreo";
+      } else {
+        scoreType = "scoreMinusOne";
+      }
+    }
+
+    return scoreType;
   }
 
   @GET

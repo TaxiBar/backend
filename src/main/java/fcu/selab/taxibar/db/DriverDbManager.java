@@ -16,7 +16,7 @@ public class DriverDbManager {
 
   private IDatabase database = new MySqlDatabase();
 
-  public static DriverDbManager getInstanse() {
+  public static DriverDbManager getInstance() {
     return DB_MANAGER;
   }
 
@@ -85,9 +85,14 @@ public class DriverDbManager {
         driver.setPlateNumber(plate);
       }
       preStmt.close();
-
     } catch (SQLException e) {
       e.printStackTrace();
+    } finally {
+      try {
+        conn.close();
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
     }
 
     return driver;

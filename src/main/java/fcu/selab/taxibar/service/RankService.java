@@ -30,7 +30,19 @@ public class RankService {
   @Path("add")
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
   @Produces(MediaType.APPLICATION_JSON)
-  public String register(@FormParam("driverId") int driverId, @FormParam("score") float score) {
+  public String addRank(@FormParam("driverId") int driverId, @FormParam("scoreType") String scoreType) {
+    int score = 0;
+
+    if (scoreType.equals("scoreOne")) {
+      score = 1;
+    }
+    if (scoreType.equals("scoreZreo")) {
+      score = 0;
+    }
+    if (scoreType.equals("scoreMinusOne")) {
+      score = -1;
+    }
+
     Rank rank = new Rank();
     rank.setDriverId(driverId);
     rank.setScore(score);
@@ -43,7 +55,14 @@ public class RankService {
   @Path("driverId/{driverId}")
   @Produces(MediaType.APPLICATION_JSON)
   public Rank getRank(@PathParam("driverId") int driverId) {
-    return dbManager.getRank(driverId);
+    return dbManager.getRankByDriverId(driverId);
+  }
+
+  @GET
+  @Path("plateNumber/{plateNumber}")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Rank getRank(@PathParam("plateNumber") String plateNumber) {
+    return dbManager.getRankByPlateNumber(plateNumber);
   }
 
   @GET

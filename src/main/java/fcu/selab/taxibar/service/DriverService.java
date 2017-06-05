@@ -17,7 +17,7 @@ import fcu.selab.taxibar.db.DriverDbManager;
 @Path("driver/")
 public class DriverService {
 
-  private DriverDbManager dbManager = DriverDbManager.getInstanse();
+  private DriverDbManager dbManager = DriverDbManager.getInstance();
 
   @GET
   @Path("hello")
