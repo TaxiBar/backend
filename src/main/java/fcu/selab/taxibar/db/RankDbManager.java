@@ -26,7 +26,7 @@ public class RankDbManager {
 
   private DriverDbManager driverDbManager = DriverDbManager.getInstance();
 
-  public boolean addRank(Rank rank) {
+  public boolean updateRank(Rank rank) {
     Connection conn = database.getConnection();
     PreparedStatement preStmt = null;
     String sql = "UPDATE Rank SET score=? WHERE driverID=?";
@@ -40,6 +40,66 @@ public class RankDbManager {
       preStmt.close();
 
       check = true;
+    } catch (SQLException e) {
+      e.printStackTrace();
+    } finally {
+      try {
+        conn.close();
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
+    }
+    return check;
+  }
+
+  public boolean addRank(Rank rank) {
+    Connection conn = database.getConnection();
+    PreparedStatement preStmt = null;
+    String sql = "INSERT INTO Rank (driverID, score) VALUES(?, ?)";
+    boolean check = false;
+
+    try {
+      preStmt = conn.prepareStatement(sql);
+      preStmt.setInt(1, rank.getDriverId());
+      preStmt.setFloat(2, rank.getScore());
+      preStmt.executeUpdate();
+      preStmt.close();
+
+      check = true;
+    } catch (SQLException e) {
+      e.printStackTrace();
+    } finally {
+      try {
+        conn.close();
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
+    }
+    return check;
+  }
+
+  public boolean isEmpty(int driverId) {
+    boolean check = false;
+
+    Connection conn = database.getConnection();
+    PreparedStatement preStmt = null;
+    String sql = "SELECT *FROM Rank WHERE driverID=?";
+    Rank rank = new Rank();
+
+    try {
+      preStmt = conn.prepareStatement(sql);
+      preStmt.setInt(1, driverId);
+      ResultSet rs = preStmt.executeQuery();
+      if (rs.next()) {
+        int score = rs.getInt("score");
+
+        rank.setDriverId(driverId);
+        rank.setScore(score);
+
+        check = true;
+      }
+      preStmt.close();
+
     } catch (SQLException e) {
       e.printStackTrace();
     } finally {

@@ -46,7 +46,14 @@ public class RankService {
     Rank rank = new Rank();
     rank.setDriverId(driverId);
     rank.setScore(score);
-    boolean check = dbManager.addRank(rank);
+    boolean isEmpty = dbManager.isEmpty(driverId);
+    boolean check = false;
+
+    if (!isEmpty) {
+      check = dbManager.addRank(rank);
+    } else {
+      check = dbManager.updateRank(rank);
+    }
 
     return String.valueOf(check);
   }

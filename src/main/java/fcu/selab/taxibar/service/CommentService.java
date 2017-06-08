@@ -38,6 +38,13 @@ public class CommentService {
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
   public Response addComment(@FormParam("plateNumber") String plateNumber, @FormParam("content") String content,
       @FormParam("rate") int rate) throws URISyntaxException {
+
+    boolean isNoThisDriver = driverService.isEmpty(plateNumber);
+
+    if (!isNoThisDriver) {
+      driverService.register(plateNumber);
+    }
+
     int driverId = driverService.getDriverByPlateNumber(plateNumber).getId();
 
     Comment comment = new Comment();
@@ -50,13 +57,9 @@ public class CommentService {
 
     caculateRank(driverId);
 
-    // Response response = Response.ok().build();
     if (!check) {
-      // response =
-      // Response.serverError().status(Status.INTERNAL_SERVER_ERROR).build();
       java.net.URI location = new java.net.URI("../GiveComment.jsp");
     }
-    // return response;
     java.net.URI location = new java.net.URI("../GiveComment.jsp");
     return Response.temporaryRedirect(location).build();
   }

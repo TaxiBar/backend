@@ -98,6 +98,38 @@ public class DriverDbManager {
     return driver;
   }
 
+  public boolean isEmpty(String plateNumber) {
+    Connection conn = database.getConnection();
+    PreparedStatement preStmt = null;
+    String sql = "SELECT *FROM Driver WHERE plateNumber=?";
+    Driver driver = new Driver();
+    boolean check = false;
+    try {
+      preStmt = conn.prepareStatement(sql);
+      preStmt.setString(1, plateNumber);
+      ResultSet rs = preStmt.executeQuery();
+      while (rs.next()) {
+        String plate = plateNumber;
+        int driverId = rs.getInt("driverID");
+        driver.setId(driverId);
+        driver.setPlateNumber(plate);
+
+        check = true;
+      }
+      preStmt.close();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    } finally {
+      try {
+        conn.close();
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
+    }
+
+    return check;
+  }
+
   public List<Driver> listDrivers() {
     List<Driver> lsDrivers = new ArrayList<Driver>();
     Connection conn = database.getConnection();

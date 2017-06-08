@@ -61,4 +61,8 @@ public class DriverService {
   public List<Driver> listDrivers() {
     return dbManager.listDrivers();
   }
+
+  public boolean isEmpty(String plateNumber) {
+    return dbManager.isEmpty(plateNumber);
+  }
 }
